@@ -5,7 +5,22 @@ $default-color: #E3E7ED;
 .slider {
 	position: relative;
 
-	text-align: center;
+  text-align: center;
+  
+  // Default button style overrides
+  button {
+    background: none;
+    border: none;
+    -webkit-appearance: none;
+  }
+  
+  button:focus {
+    outline: none;
+  }
+  
+  button:hover {
+    cursor: pointer;
+  }
 
 	// The list containing slider elements
 	.slider-gallery {
