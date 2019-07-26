@@ -73,7 +73,7 @@
   right: -10%;
 }
 .slider .slider-bullets {
-  padding: 0;
+  padding: 0 6rem;
   margin: 0;
   position: absolute;
   z-index: 5;
@@ -89,6 +89,8 @@
   height: 0 !important;
   opacity: 0 !important;
   visibility: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
   transform: translateY(80px) !important;
 }
 .slider .bullet {
@@ -111,7 +113,8 @@
   transform: scale(1.2);
 }
 .slider .bullet img {
-  width: 10rem;
+  width: 5rem;
+  max-width: 10rem;
 }
 .slider .bullet-active {
   opacity: 1;
