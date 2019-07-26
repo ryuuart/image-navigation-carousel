@@ -17,11 +17,11 @@ Just follow the following layout for the HTML implementation
 <div class="slider">
     <ul class="slider-bullets">
         <!-- Left navigation button -->
-        <button class="slider-navigation slider-navigation_left"></button>
+        <button class="slider-navigation slider-navigation_left"><img src="/img/left-arrow.svg"/></button>
         <!-- Pair each bullet image with the corresponsing slide -->
         <li class="bullet"></li>
         <!-- Right navigation button -->
-        <button class="slider-navigation slider-navigation_right"></button>
+        <button class="slider-navigation slider-navigation_right"><img src="/img/right-arrow.svg"/></button>
     </ul>
     <!-- Slider gallery -->
     <ul class="slider-gallery">
