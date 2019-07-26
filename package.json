@@ -1,0 +1,23 @@
+{
+  "name": "incarousel",
+  "version": "1.0.0",
+  "description": "A lightweight, responsive carousel with customizable image navigation",
+  "main": "image_carousel.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/18nguyenl/image-navigation-carousel.git"
+  },
+  "keywords": [
+    "carousel",
+    "slider"
+  ],
+  "author": "Long Nguyen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/18nguyenl/image-navigation-carousel/issues"
+  },
+  "homepage": "https://github.com/18nguyenl/image-navigation-carousel#readme"
+}
