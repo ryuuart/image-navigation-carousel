@@ -125,7 +125,7 @@ $default-color: #E3E7ED;
 		white-space: nowrap;
 	}
 	
-	.bullet-hide {
+	.bullet-hide, .bullet-hide * {
 		width: 0 !important;
 		height: 0 !important;
 		opacity: 0 !important;
