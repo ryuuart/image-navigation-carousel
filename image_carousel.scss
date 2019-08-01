@@ -146,6 +146,9 @@ $default-color: #E3E7ED;
 		list-style: none;
 		transition: transform 0.35s cubic-bezier(0.785, 0.135, 0.15, 0.86),
 		opacity 0.75s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+
+		width: 5rem;
+		max-width: 10rem;
 		
 		&:first-child {
 			margin-left: 0;
@@ -158,8 +161,7 @@ $default-color: #E3E7ED;
 		}
 		
 		img {
-			width: 5rem;
-			max-width: 10rem;
+			width: 100%;
 		}
 	}
 	
