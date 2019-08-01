@@ -10,7 +10,9 @@ To install, include the JavaScript and CSS.
 
 ## Usage
 
-Just follow the following layout for the HTML implementation
+Just follow the following layout for the HTML implementation. Make sure your bullet matches
+the the respective slide. This is how they sync with each other. Wrong order would make the bullet
+link to the wrong slide ☝️
 
 ```html
 <!-- Slider container -->
@@ -19,7 +21,9 @@ Just follow the following layout for the HTML implementation
         <!-- Left navigation button -->
         <button class="slider-navigation slider-navigation_left"><img src="/img/left-arrow.svg"/></button>
         <!-- Pair each bullet image with the corresponsing slide -->
-        <li class="bullet"></li>
+        <li class="bullet">
+            <!-- Insert bullet content here -->
+        </li>
         <!-- Right navigation button -->
         <button class="slider-navigation slider-navigation_right"><img src="/img/right-arrow.svg"/></button>
     </ul>
@@ -33,6 +37,64 @@ Just follow the following layout for the HTML implementation
 </div>
 ```  
 
-## Custom CSS
+## Customization
 
-Make sure you include your custom styles after the declaration from the default stylesheet
+To customize or extend, just add onto the Incarousel CSS.
+
+### Details about CSS classes
+
+`slider`  
+The slider container class  
+
+`slider-bullets`  
+The bullet container class.  
+
+`bullet`  
+Styling for a bullet. A bullet is an individual navigation item in the carousel.  
+
+`slider-navigation`  
+The slider navigation container class  
+
+`slider-navigation_left` `slider-navigation_right`  
+Styles each slider navigation button individually  
+
+`slider-gallery`  
+Container for all slides.  
+
+`slide`  
+An individual "slide" of content.  
+
+`bullet-hide`  
+Makes the bullet `display: none` without actually using `display:none`  
+
+`bullet-active`  
+highlights the active bullet  
+
+`slide-active`  
+reveals the current syncrhonized slide  
+
+### Structuring the CSS
+
+Make sure to use CSS specificity as much as possible (this is so the CSS doesn't meld in with your CSS).
+For my examples, I made a separate stylesheet and overwrote the styles.
+
+#### Example
+
+```css
+.slider .slider-gallery {
+    margin: 0;
+    width: 100vw;
+    max-width: 100vw;
+}
+
+.slider .slider-bullets .bullet {
+    padding: 0 0.75rem;
+}
+
+.slider .slider-bullets .bullet img {
+    width: 5rem;
+}
+.slider .slider-bullets .bullet.bullet-hide img {
+    width: 0;
+}
+```
