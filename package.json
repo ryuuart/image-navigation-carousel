@@ -1,6 +1,6 @@
 {
   "name": "incarousel",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A lightweight, responsive carousel with customizable image navigation",
   "main": "image_carousel.js",
   "scripts": {
