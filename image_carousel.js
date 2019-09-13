@@ -56,10 +56,6 @@ class ImageCarousel {
 		})
 
 		this.ImageCarouselInitialize();
-	
-		// Initialize 
-		window.addEventListener("resize", this.ImageCarouselInitialize)
-		window.addEventListener("orientationchange", this.ImageCarouselInitialize)
 	}
 
 	// Check if we're at the very first element or last element of navigation
@@ -113,7 +109,7 @@ class ImageCarousel {
 				if (this.bullets.length > 1) { 
 					this.sliderNavigation.forEach(e => e.style.visibility = `visible`);
 					this.sliderNavigation.forEach(e => e.style.opacity = ``);
-					isNavigationEnd();
+					this.isNavigationEnd();
 				}
 				
 				// Hide the bullets until there are 1 left
@@ -137,7 +133,7 @@ class ImageCarousel {
 				} else {
 					this.sliderNavigation.forEach(e => e.style.opacity = ``)
 					this.sliderNavigation.forEach(e => e.style.visibility = `visible`)
-					isNavigationEnd();
+					this.isNavigationEnd();
 				}
 				
 				// Hide the bullets until there are 3 left
@@ -173,6 +169,10 @@ class ImageCarousel {
 				this.bullets[i].classList.remove("bullet-hide")
 			}
 		}
+
+		// Initialize 
+		window.addEventListener("resize", this.ImageCarouselInitialize.bind(this))
+		window.addEventListener("orientationchange", this.ImageCarouselInitialize.bind(this))
 	}
 
 	// Swap a bullet and slide (switching to the next one)
@@ -185,7 +185,7 @@ class ImageCarousel {
 
 		this.slidesPosition = -index * this.slideLength;
 
-		this.slides.forEach(e => {
+		Array.from(this.sliderGallery.children).forEach(e => {
 			e.style.transform = `translateX(${this.slidesPosition + this.slidesOffset}px)`;	
 		})
 		
@@ -194,16 +194,17 @@ class ImageCarousel {
 
 	// Change start index for ordering purposes
 	setStartIndex(deltaIndex) {
-		this.leftIndex += deltaIndex;
-		this.rightIndex += deltaIndex;
-
 		this.slideSwap(deltaIndex);
 	}
 
 	setOffset(offset) {
+		offset = 0;
 		this.slidesOffset = offset * this.slideLength;
 
-		this.slides.forEach(e => {
+		this.sliderGallery.insertBefore(this.slides[this.slides.length - 1].cloneNode(true), this.slides[0])
+		this.sliderGallery.appendChild(this.slides[0].cloneNode(true))
+
+		Array.from(this.sliderGallery.children).forEach(e => {
 			e.style.transform = `translateX(${this.slidesPosition + this.slidesOffset}px)`;
 		})
 	}
