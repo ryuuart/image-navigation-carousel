@@ -1,175 +1,194 @@
-document.addEventListener("DOMContentLoaded", (event) => {
-	const bullets = [...document.querySelectorAll(".bullet")];
-	const sliderBullets = document.querySelector(".slider-bullets");
-	const slides = [...document.querySelectorAll(".slide")];
-	const sliderNavigation = [...document.querySelectorAll(".slider-navigation")]
-	const sliderNavigationLeft = document.querySelector(".slider-navigation_left");
-	const sliderNavigationRight = document.querySelector(".slider-navigation_right");
-	const sliderBulletsLength = bullets[0].clientWidth * bullets.length; // bc display: none changes lenghth, a constant is defined first
-	
-	// Controls which element gets hidden and shown when navigating left or right
-	let leftIndex = -1, rightIndex = 0;
-	
-	// The current bullet and slide
-	let selected;
-	
+class ImageCarousel {
+	constructor() {
+		this.bullets = [...document.querySelectorAll(".bullet")];
+		this.sliderBullets = document.querySelector(".slider-bullets");
+		this.slides = [...document.querySelectorAll(".slide")];
+		this.sliderGallery = document.querySelector(".slider-gallery");
+		this.sliderNavigation = [...document.querySelectorAll(".slider-navigation")];
+		this.sliderNavigationLeft = document.querySelector(".slider-navigation_left");
+		this.sliderNavigationRight = document.querySelector(".slider-navigation_right");
+		this.sliderBulletsLength = this.bullets[0].clientWidth * this.bullets.length; // bc display: none changes lenghth, a constant is defined first
+		this.sliderGalleryLength = 0;
+		this.slideLength = this.slides[0].scrollWidth;
+
+		// Controls which element gets hidden and shown when navigating left or right
+		this.leftIndex = -1, this.rightIndex = 0;
+		
+		// The current bullet and slide
+		this.selected;
+
+		window.addEventListener("DOMContentLoaded", () => {
+			// Iterate through all bullets and add event listeners
+			for (let i = 0; i < this.bullets.length; i++) {
+				this.bullets[i].addEventListener('mouseover', () => this.slideSwap(i));
+				this.bullets[i].addEventListener('click', () => this.slideSwap(i));
+			}
+
+			// Right navigation click
+			this.sliderNavigationRight.addEventListener('click', (event) => {
+				if (this.rightIndex < this.bullets.length - 1) {
+					// bullets[++leftIndex].classList.add('bullet-hide')
+					// bullets[++rightIndex].classList.remove('bullet-hide')
+					
+					this.isNavigationEnd();
+					
+					// When on mobile mode, tapping right means switching the slide as well
+					if (window.innerWidth < 996) {
+						this.slideSwap(this.rightIndex);
+					}
+				} 
+			})
+		
+			// Left navigation click
+			this.sliderNavigationLeft.addEventListener('click', (event) => {
+				if (this.leftIndex > -1) {
+					// bullets[leftIndex--].classList.remove('bullet-hide');
+					// bullets[rightIndex--].classList.add('bullet-hide');
+					
+					this.isNavigationEnd();
+					
+					// When on mobile mode, tapping left means switching the slide as well
+					if (window.innerWidth < 996) {
+						this.slideSwap(this.leftIndex + 1);
+					}
+				}
+			})
+
+			this.ImageCarouselInitialize();
+		
+			// Initialize 
+			window.addEventListener("resize", this.ImageCarouselInitialize)
+			window.addEventListener("orientationchange", this.ImageCarouselInitialize)
+		});
+	}
+
 	// Check if we're at the very first element or last element of navigation
 	// If we are, hide the respective buttons
-	function isNavigationEnd() {
-		if (leftIndex <= -1) {
+	isNavigationEnd() {
+		if (this.leftIndex <= -1) {
 			// Here the opacity is set too so the CSS transition applies
-			sliderNavigationLeft.style.opacity = `0`;
-			sliderNavigationLeft.style.visibility = `hidden`;
+			this.sliderNavigationLeft.style.opacity = `0`;
+			this.sliderNavigationLeft.style.visibility = `hidden`;
 		} else {
-			sliderNavigationLeft.style.opacity = ``
-			sliderNavigationLeft.style.visibility = `visible`
+			this.sliderNavigationLeft.style.opacity = ``
+			this.sliderNavigationLeft.style.visibility = `visible`
 		}
 		
-		if (rightIndex >= bullets.length - 1) {
-			sliderNavigationRight.style.opacity = `0`;
-			sliderNavigationRight.style.visibility = `hidden`;
+		if (this.rightIndex >= this.bullets.length - 1) {
+			this.sliderNavigationRight.style.opacity = `0`;
+			this.sliderNavigationRight.style.visibility = `hidden`;
 		} else {
-			sliderNavigationRight.style.opacity = ``;
-			sliderNavigationRight.style.visibility = `visible`;
+			this.sliderNavigationRight.style.opacity = ``;
+			this.sliderNavigationRight.style.visibility = `visible`;
 		}
 	}
-	
+
 	// Swap a bullet and slide (switching to the next one)
-	function slideSwap(index) {
-		selected[0].classList.remove('bullet-active')
-		selected[1].classList.remove('slide-active')
+	slideSwap(index) {
+		this.selected[0].classList.remove('bullet-active')
+		this.selected[1].classList.remove('slide-active')
 		
-		bullets[index].classList.add('bullet-active');
-		slides[index].classList.add('slide-active');
+		this.bullets[index].classList.add('bullet-active');
+		this.slides[index].classList.add('slide-active');
+
+		this.slides.forEach(e => {
+			e.style.transform = `translateX(${-index * this.slideLength}px)`;	
+		})
+		console.log(this.slides)
 		
-		selected = [bullets[index], slides[index]]
+		this.selected = [this.bullets[index], this.slides[index]]
 	}
-	
+
 	// Controls the layout and what gets shown
 	// It's called when the viewport changes
-	function ImageCarousel() {
+	ImageCarouselInitialize() {
 		// By default, nothing should be active
-		bullets.forEach(e => e.classList.remove('bullet-active'))
-		slides.forEach(e => e.classList.remove('slide-active'))
+		this.bullets.forEach(e => e.classList.remove('bullet-active'))
+		this.slides.forEach(e => {
+			e.classList.remove('slide-active')
+
+			this.sliderGalleryLength += e.scrollWidth; // get total length for sliding purposes
+		})
 		
 		// Make the first slide and bullet activated
-		bullets[0].classList.add('bullet-active')
-		slides[0].classList.add('slide-active')
+		this.bullets[0].classList.add('bullet-active')
+		this.slides[0].classList.add('slide-active')
 		
 		//  Select the default element used to swap 'active' classes
-		selected = [document.querySelector('.bullet-active'), document.querySelector('.slide-active')];
+		this.selected = [document.querySelector('.bullet-active'), document.querySelector('.slide-active')];
 		
-		leftIndex = -1; // Makes it compatible with navigating right
+		this.leftIndex = -1; // Makes it compatible with navigating right
 
 		// Determines elements that should be hidden first
-		if (sliderBulletsLength > (sliderBullets.clientWidth - sliderNavigationLeft.clientWidth * 2) || bullets.length > 5) {
+		if (this.sliderBulletsLength > (this.sliderBullets.clientWidth - this.sliderNavigationLeft.clientWidth * 2) || this.bullets.length > 5) {
 			if (window.innerWidth < 996) {
 				// Here, we only want to display 1 bullet
-				rightIndex = 0;
+				this.rightIndex = 0;
 				
 				// Make the navigation visible when there's more than one element
-				if (bullets.length > 1) { 
-					sliderNavigation.forEach(e => e.style.visibility = `visible`);
-					sliderNavigation.forEach(e => e.style.opacity = ``);
+				if (this.bullets.length > 1) { 
+					this.sliderNavigation.forEach(e => e.style.visibility = `visible`);
+					this.sliderNavigation.forEach(e => e.style.opacity = ``);
 					isNavigationEnd();
 				}
 				
 				// Hide the bullets until there are 1 left
-				for(let i = 0; i < bullets.length; i++) {
+				for(let i = 0; i < this.bullets.length; i++) {
 					if (i >= 1) {
-						bullets[i].classList.add("bullet-hide")
+						this.bullets[i].classList.add("bullet-hide")
 					}
 					else
-						bullets[i].classList.remove("bullet-hide")
+						this.bullets[i].classList.remove("bullet-hide")
 				}
 			}
 			else if (window.innerWidth < 1440) {
 				// Here, we want to display only 3 bullets
-				rightIndex = 2;
+				this.rightIndex = 2;
 				
+				// Hide the navigation
 				// Since 3 elements will be shown, if there's already 3, there's no point to show the arrows
-				if (bullets.length === 3) {
-					sliderNavigation.forEach(e => e.style.opacity = `0`)
-					sliderNavigation.forEach(e => e.style.visibility = `hidden`)
+				if (this.bullets.length === 3) {
+					this.sliderNavigation.forEach(e => e.style.opacity = `0`)
+					this.sliderNavigation.forEach(e => e.style.visibility = `hidden`)
 				} else {
-					sliderNavigation.forEach(e => e.style.opacity = ``)
-					sliderNavigation.forEach(e => e.style.visibility = `visible`)
+					this.sliderNavigation.forEach(e => e.style.opacity = ``)
+					this.sliderNavigation.forEach(e => e.style.visibility = `visible`)
 					isNavigationEnd();
 				}
 				
 				// Hide the bullets until there are 3 left
-				for(let i = 0; i < bullets.length; i++) {
+				for(let i = 0; i < this.bullets.length; i++) {
 					if (i >= 3) {
-						bullets[i].classList.add("bullet-hide")
+						this.bullets[i].classList.add("bullet-hide")
 					}
 					else
-					bullets[i].classList.remove("bullet-hide")
+					this.bullets[i].classList.remove("bullet-hide")
 				}
 			} else { // This is for larger viewports
 				// This time we want to only show 5 elements, so we select the 5th element instead of the 3rd
-				rightIndex = 4;
+				this.rightIndex = 4;
 				
 				// Hide the bullets until there are 5 left
-				for(let i = 0; i < bullets.length; i++) {
+				for(let i = 0; i < this.bullets.length; i++) {
 					if (i >= 5) {
-						bullets[i].classList.add("bullet-hide")
+						this.bullets[i].classList.add("bullet-hide")
 					}
 					else
-						bullets[i].classList.remove("bullet-hide")
+						this.bullets[i].classList.remove("bullet-hide")
 				}
 			}
 		} else {
 			// Here, there's no responsive issues with the width of the slider so just show it all
 			
 			// Since there's no responsive issues, there's no need for navigation
-			sliderNavigation.forEach(e => e.style.opacity = `0`);
-			sliderNavigation.forEach(e => e.style.visibility = `hidden`);
+			this.sliderNavigation.forEach(e => e.style.opacity = `0`);
+			this.sliderNavigation.forEach(e => e.style.visibility = `hidden`);
 			
 			// Since there's no responsive issues, nothing should be hidden
-			for(let i = 0; i < bullets.length; i++) {
-				bullets[i].classList.remove("bullet-hide")
+			for(let i = 0; i < this.bullets.length; i++) {
+				this.bullets[i].classList.remove("bullet-hide")
 			}
 		}
 	}
-	
-	// Iterate through all bullets and add event listeners
-	for (let i = 0; i < bullets.length; i++) {
-		bullets[i].addEventListener('mouseover', () => slideSwap(i));
-		bullets[i].addEventListener('click', () => slideSwap(i));
-	}
+}
 
-	// Right navigation click
-	sliderNavigationRight.addEventListener('click', (event) => {
-		if (rightIndex < bullets.length - 1) {
-			bullets[++leftIndex].classList.add('bullet-hide')
-			bullets[++rightIndex].classList.remove('bullet-hide')
-			
-			isNavigationEnd();
-			
-			// When on mobile mode, tapping right means switching the slide as well
-			if (window.innerWidth < 996) {
-				slideSwap(rightIndex);
-			}
-		} 
-	})
-	
-	// Left navigation click
-	sliderNavigationLeft.addEventListener('click', (event) => {
-		if (leftIndex > -1) {
-			bullets[leftIndex--].classList.remove('bullet-hide');
-			bullets[rightIndex--].classList.add('bullet-hide');
-			
-			isNavigationEnd();
-			
-			// When on mobile mode, tapping left means switching the slide as well
-			if (window.innerWidth < 996) {
-				slideSwap(leftIndex + 1);
-			}
-		}
-	})
-	
-	// Initialize 
-	window.addEventListener("load", ImageCarousel)
-	window.addEventListener("resize", ImageCarousel)
-	window.addEventListener("orientationchange", ImageCarousel)
-})

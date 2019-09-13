@@ -16,6 +16,8 @@
 .slider .slider-gallery {
   background: black;
   position: relative;
+  white-space: nowrap;
+  overflow: hidden;
   z-index: 1;
   list-style-type: none;
   padding: 0;
@@ -24,19 +26,17 @@
   height: 523px;
 }
 .slider .slide {
-  visibility: hidden;
-  opacity: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
+  display: inline-block;
   width: 100%;
   height: 100%;
   transition: all 0.3s ease-in;
 }
 .slider .slide img {
-  position: absolute;
+  position: relative;
   left: 0;
   top: 0;
+  display: inline-block;
   z-index: 1;
   height: 100%;
   width: 100%;
@@ -101,6 +101,8 @@
   position: relative;
   list-style: none;
   transition: transform 0.35s cubic-bezier(0.785, 0.135, 0.15, 0.86), opacity 0.75s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+  width: 5rem;
+  max-width: 10rem;
 }
 .slider .bullet:first-child {
   margin-left: 0;
@@ -111,8 +113,7 @@
   transform: scale(1.2);
 }
 .slider .bullet img {
-  width: 5rem;
-  max-width: 10rem;
+  width: 100%;
 }
 .slider .bullet-active {
   opacity: 1;
