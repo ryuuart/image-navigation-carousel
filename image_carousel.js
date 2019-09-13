@@ -10,6 +10,8 @@ class ImageCarousel {
 		this.sliderBulletsLength = this.bullets[0].clientWidth * this.bullets.length; // bc display: none changes lenghth, a constant is defined first
 		this.sliderGalleryLength = 0;
 		this.slideLength = this.slides[0].scrollWidth;
+		this.slidesOffset = 0;
+		this.slidesPosition = 0;
 
 		// Controls which element gets hidden and shown when navigating left or right
 		this.leftIndex = -1, this.rightIndex = 0;
@@ -17,49 +19,47 @@ class ImageCarousel {
 		// The current bullet and slide
 		this.selected;
 
-		window.addEventListener("DOMContentLoaded", () => {
-			// Iterate through all bullets and add event listeners
-			for (let i = 0; i < this.bullets.length; i++) {
-				this.bullets[i].addEventListener('mouseover', () => this.slideSwap(i));
-				this.bullets[i].addEventListener('click', () => this.slideSwap(i));
-			}
+		// Iterate through all bullets and add event listeners
+		for (let i = 0; i < this.bullets.length; i++) {
+			this.bullets[i].addEventListener('mouseover', () => this.slideSwap(i));
+			this.bullets[i].addEventListener('click', () => this.slideSwap(i));
+		}
 
-			// Right navigation click
-			this.sliderNavigationRight.addEventListener('click', (event) => {
-				if (this.rightIndex < this.bullets.length - 1) {
-					// bullets[++leftIndex].classList.add('bullet-hide')
-					// bullets[++rightIndex].classList.remove('bullet-hide')
-					
-					this.isNavigationEnd();
-					
-					// When on mobile mode, tapping right means switching the slide as well
-					if (window.innerWidth < 996) {
-						this.slideSwap(this.rightIndex);
-					}
-				} 
-			})
-		
-			// Left navigation click
-			this.sliderNavigationLeft.addEventListener('click', (event) => {
-				if (this.leftIndex > -1) {
-					// bullets[leftIndex--].classList.remove('bullet-hide');
-					// bullets[rightIndex--].classList.add('bullet-hide');
-					
-					this.isNavigationEnd();
-					
-					// When on mobile mode, tapping left means switching the slide as well
-					if (window.innerWidth < 996) {
-						this.slideSwap(this.leftIndex + 1);
-					}
+		// Right navigation click
+		this.sliderNavigationRight.addEventListener('click', (event) => {
+			if (this.rightIndex < this.bullets.length - 1) {
+				// bullets[++leftIndex].classList.add('bullet-hide')
+				// bullets[++rightIndex].classList.remove('bullet-hide')
+				
+				this.isNavigationEnd();
+				
+				// When on mobile mode, tapping right means switching the slide as well
+				if (window.innerWidth < 996) {
+					this.slideSwap(this.rightIndex);
 				}
-			})
+			} 
+		})
+	
+		// Left navigation click
+		this.sliderNavigationLeft.addEventListener('click', (event) => {
+			if (this.leftIndex > -1) {
+				// bullets[leftIndex--].classList.remove('bullet-hide');
+				// bullets[rightIndex--].classList.add('bullet-hide');
+				
+				this.isNavigationEnd();
+				
+				// When on mobile mode, tapping left means switching the slide as well
+				if (window.innerWidth < 996) {
+					this.slideSwap(this.leftIndex + 1);
+				}
+			}
+		})
 
-			this.ImageCarouselInitialize();
-		
-			// Initialize 
-			window.addEventListener("resize", this.ImageCarouselInitialize)
-			window.addEventListener("orientationchange", this.ImageCarouselInitialize)
-		});
+		this.ImageCarouselInitialize();
+	
+		// Initialize 
+		window.addEventListener("resize", this.ImageCarouselInitialize)
+		window.addEventListener("orientationchange", this.ImageCarouselInitialize)
 	}
 
 	// Check if we're at the very first element or last element of navigation
@@ -81,22 +81,6 @@ class ImageCarousel {
 			this.sliderNavigationRight.style.opacity = ``;
 			this.sliderNavigationRight.style.visibility = `visible`;
 		}
-	}
-
-	// Swap a bullet and slide (switching to the next one)
-	slideSwap(index) {
-		this.selected[0].classList.remove('bullet-active')
-		this.selected[1].classList.remove('slide-active')
-		
-		this.bullets[index].classList.add('bullet-active');
-		this.slides[index].classList.add('slide-active');
-
-		this.slides.forEach(e => {
-			e.style.transform = `translateX(${-index * this.slideLength}px)`;	
-		})
-		console.log(this.slides)
-		
-		this.selected = [this.bullets[index], this.slides[index]]
 	}
 
 	// Controls the layout and what gets shown
@@ -189,6 +173,39 @@ class ImageCarousel {
 				this.bullets[i].classList.remove("bullet-hide")
 			}
 		}
+	}
+
+	// Swap a bullet and slide (switching to the next one)
+	slideSwap(index) {
+		this.selected[0].classList.remove('bullet-active')
+		this.selected[1].classList.remove('slide-active')
+		
+		this.bullets[index].classList.add('bullet-active');
+		this.slides[index].classList.add('slide-active');
+
+		this.slidesPosition = -index * this.slideLength;
+
+		this.slides.forEach(e => {
+			e.style.transform = `translateX(${this.slidesPosition + this.slidesOffset}px)`;	
+		})
+		
+		this.selected = [this.bullets[index], this.slides[index]]
+	}
+
+	// Change start index for ordering purposes
+	setStartIndex(deltaIndex) {
+		this.leftIndex += deltaIndex;
+		this.rightIndex += deltaIndex;
+
+		this.slideSwap(deltaIndex);
+	}
+
+	setOffset(offset) {
+		this.slidesOffset = offset * this.slideLength;
+
+		this.slides.forEach(e => {
+			e.style.transform = `translateX(${this.slidesPosition + this.slidesOffset}px)`;
+		})
 	}
 }
 
