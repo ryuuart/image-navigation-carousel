@@ -6,6 +6,8 @@ $default-color: #E3E7ED;
 	position: relative;
 	
 	text-align: center;
+
+	overflow: hidden;
 	
 	// Default button style overrides
 	button {
@@ -29,8 +31,6 @@ $default-color: #E3E7ED;
 
 		white-space: nowrap;
 
-		overflow: hidden;
-		
 		z-index: 1;
 
 		list-style-type: none;

@@ -1,5 +1,6 @@
 class ImageCarousel {
 	constructor() {
+		// Store elements from website
 		this.bullets = [...document.querySelectorAll(".bullet")];
 		this.sliderBullets = document.querySelector(".slider-bullets");
 		this.slides = [...document.querySelectorAll(".slide")];
@@ -7,11 +8,17 @@ class ImageCarousel {
 		this.sliderNavigation = [...document.querySelectorAll(".slider-navigation")];
 		this.sliderNavigationLeft = document.querySelector(".slider-navigation_left");
 		this.sliderNavigationRight = document.querySelector(".slider-navigation_right");
+		
+		// calculate useful dimensions
 		this.sliderBulletsLength = this.bullets[0].clientWidth * this.bullets.length; // bc display: none changes lenghth, a constant is defined first
 		this.sliderGalleryLength = 0;
 		this.slideLength = this.slides[0].scrollWidth;
 		this.slidesOffset = 0;
 		this.slidesPosition = 0;
+		this.currentPosition = 0;
+
+		this.leftClones = [];
+		this.rightClones = [];
 
 		// Controls which element gets hidden and shown when navigating left or right
 		this.leftIndex = -1, this.rightIndex = 0;
@@ -32,6 +39,8 @@ class ImageCarousel {
 				this.bullets[++this.rightIndex].classList.remove('bullet-hide')
 				
 				this.isNavigationEnd();
+
+				this.currentPosition = this.rightIndex;
 				
 				// When on mobile mode, tapping right means switching the slide as well
 				if (window.innerWidth < 996) {
@@ -47,7 +56,9 @@ class ImageCarousel {
 				this.bullets[this.rightIndex--].classList.add('bullet-hide');
 				
 				this.isNavigationEnd();
-				
+
+				this.currentPosition = this.leftIndex + 1;
+
 				// When on mobile mode, tapping left means switching the slide as well
 				if (window.innerWidth < 996) {
 					this.slideSwap(this.leftIndex + 1);
@@ -57,7 +68,11 @@ class ImageCarousel {
 
 		// Initialize 
 		window.addEventListener("load", this.ImageCarouselInitialize.bind(this))
-		window.addEventListener("resize", this.ImageCarouselInitialize.bind(this))
+		window.addEventListener("resize", () => {
+			let resizeTimer;
+			clearTimeout(resizeTimer);
+			resizeTimer = setTimeout(this.ImageCarouselInitialize.bind(this), 500);
+		})
 		window.addEventListener("orientationchange", this.ImageCarouselInitialize.bind(this))
 	}
 
@@ -92,14 +107,16 @@ class ImageCarousel {
 
 			this.sliderGalleryLength += e.scrollWidth; // get total length for sliding purposes
 		})
-		
-		// Make the first slide and bullet activated
-		this.bullets[0].classList.add('bullet-active')
-		this.slides[0].classList.add('slide-active')
+
+		// Make the current slide and bullet activated
+		this.bullets[this.currentPosition].classList.add('bullet-active')
+		this.slides[this.currentPosition].classList.add('slide-active')
 		
 		//  Select the default element used to swap 'active' classes
 		this.selected = [document.querySelector('.bullet-active'), document.querySelector('.slide-active')];
-		
+
+		this.slideSwap(this.currentPosition)
+
 		this.leftIndex = -1; // Makes it compatible with navigating right
 
 		// Determines elements that should be hidden first
@@ -172,20 +189,21 @@ class ImageCarousel {
 				this.bullets[i].classList.remove("bullet-hide")
 			}
 		}
-
-		this.slideLength = this.slides[0].scrollWidth;
 	}
 
 	// Swap a bullet and slide (switching to the next one)
 	slideSwap(index) {
+		this.currentPosition = index;
+		this.slideLength = this.slides[0].scrollWidth;
+		
 		this.selected[0].classList.remove('bullet-active')
 		this.selected[1].classList.remove('slide-active')
 		
 		this.bullets[index].classList.add('bullet-active');
 		this.slides[index].classList.add('slide-active');
-
+		
 		this.slidesPosition = -index * this.slideLength;
-
+		
 		Array.from(this.sliderGallery.children).forEach(e => {
 			e.style.transform = `translateX(${this.slidesPosition + this.slidesOffset}px)`;	
 		})
@@ -211,9 +229,12 @@ class ImageCarousel {
 	}
 
 	setOffset(offset) {
+		this.leftClones.forEach(e => e.remove())
+		this.rightClones.forEach(e => e.remove())
+
 		for (let i = 0; i < offset; i++) {
-			this.sliderGallery.insertBefore(this.slides[this.slides.length - (i + 1)].cloneNode(true), this.sliderGallery.children[0])
-			this.sliderGallery.appendChild(this.slides[i].cloneNode(true))
+			this.leftClones.unshift(this.sliderGallery.insertBefore(this.slides[this.slides.length - (i + 1)].cloneNode(true), this.sliderGallery.children[0]))
+			this.rightClones.unshift(this.sliderGallery.appendChild(this.slides[i].cloneNode(true)))
 		}
 	}
 }

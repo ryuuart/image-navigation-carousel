@@ -1,6 +1,7 @@
 .slider {
   position: relative;
   text-align: center;
+  overflow: hidden;
 }
 .slider button {
   background: none;
@@ -17,7 +18,6 @@
   background: black;
   position: relative;
   white-space: nowrap;
-  overflow: hidden;
   z-index: 1;
   list-style-type: none;
   padding: 0;
