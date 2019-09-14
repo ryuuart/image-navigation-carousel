@@ -55,7 +55,10 @@ class ImageCarousel {
 			}
 		})
 
-		this.ImageCarouselInitialize();
+		// Initialize 
+		window.addEventListener("load", this.ImageCarouselInitialize.bind(this))
+		window.addEventListener("resize", this.ImageCarouselInitialize.bind(this))
+		window.addEventListener("orientationchange", this.ImageCarouselInitialize.bind(this))
 	}
 
 	// Check if we're at the very first element or last element of navigation
@@ -170,9 +173,7 @@ class ImageCarousel {
 			}
 		}
 
-		// Initialize 
-		window.addEventListener("resize", this.ImageCarouselInitialize.bind(this))
-		window.addEventListener("orientationchange", this.ImageCarouselInitialize.bind(this))
+		this.slideLength = this.slides[0].scrollWidth;
 	}
 
 	// Swap a bullet and slide (switching to the next one)
@@ -194,17 +195,19 @@ class ImageCarousel {
 
 	// Change start index for ordering purposes
 	setStartIndex(deltaIndex) {
-		this.bullets[this.rightIndex].classList.add('bullet-hide')
-
-		this.leftIndex += deltaIndex;
-		this.rightIndex += deltaIndex;
-		
-		this.isNavigationEnd();
-
-		this.bullets[this.leftIndex].classList.add('bullet-hide')
-		this.bullets[this.rightIndex].classList.remove('bullet-hide')
-
-		this.slideSwap(deltaIndex);
+		if (deltaIndex > 0 && deltaIndex < this.slides.length) {
+			this.bullets[this.rightIndex].classList.add('bullet-hide')
+	
+			this.leftIndex += deltaIndex;
+			this.rightIndex += deltaIndex;
+			
+			this.isNavigationEnd();
+	
+			this.bullets[this.leftIndex].classList.add('bullet-hide')
+			this.bullets[this.rightIndex].classList.remove('bullet-hide')
+	
+			this.slideSwap(deltaIndex);
+		}
 	}
 
 	setOffset(offset) {
