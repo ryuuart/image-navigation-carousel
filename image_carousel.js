@@ -194,6 +194,16 @@ class ImageCarousel {
 
 	// Change start index for ordering purposes
 	setStartIndex(deltaIndex) {
+		this.bullets[this.rightIndex].classList.add('bullet-hide')
+
+		this.leftIndex += deltaIndex;
+		this.rightIndex += deltaIndex;
+		
+		this.isNavigationEnd();
+
+		this.bullets[this.leftIndex].classList.add('bullet-hide')
+		this.bullets[this.rightIndex].classList.remove('bullet-hide')
+
 		this.slideSwap(deltaIndex);
 	}
 
