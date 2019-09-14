@@ -28,8 +28,8 @@ class ImageCarousel {
 		// Right navigation click
 		this.sliderNavigationRight.addEventListener('click', (event) => {
 			if (this.rightIndex < this.bullets.length - 1) {
-				// bullets[++leftIndex].classList.add('bullet-hide')
-				// bullets[++rightIndex].classList.remove('bullet-hide')
+				this.bullets[++this.leftIndex].classList.add('bullet-hide')
+				this.bullets[++this.rightIndex].classList.remove('bullet-hide')
 				
 				this.isNavigationEnd();
 				
@@ -43,8 +43,8 @@ class ImageCarousel {
 		// Left navigation click
 		this.sliderNavigationLeft.addEventListener('click', (event) => {
 			if (this.leftIndex > -1) {
-				// bullets[leftIndex--].classList.remove('bullet-hide');
-				// bullets[rightIndex--].classList.add('bullet-hide');
+				this.bullets[this.leftIndex--].classList.remove('bullet-hide');
+				this.bullets[this.rightIndex--].classList.add('bullet-hide');
 				
 				this.isNavigationEnd();
 				
@@ -198,15 +198,10 @@ class ImageCarousel {
 	}
 
 	setOffset(offset) {
-		offset = 0;
-		this.slidesOffset = offset * this.slideLength;
-
-		this.sliderGallery.insertBefore(this.slides[this.slides.length - 1].cloneNode(true), this.slides[0])
-		this.sliderGallery.appendChild(this.slides[0].cloneNode(true))
-
-		Array.from(this.sliderGallery.children).forEach(e => {
-			e.style.transform = `translateX(${this.slidesPosition + this.slidesOffset}px)`;
-		})
+		for (let i = 0; i < offset; i++) {
+			this.sliderGallery.insertBefore(this.slides[this.slides.length - (i + 1)].cloneNode(true), this.sliderGallery.children[0])
+			this.sliderGallery.appendChild(this.slides[i].cloneNode(true))
+		}
 	}
 }
 
