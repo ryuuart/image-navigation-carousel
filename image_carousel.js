@@ -101,7 +101,7 @@ class ImageCarousel {
 					} 
 					
 					this.slideSwap(this.currentPosition);
-					
+
 					this.setActive()
 					
 					this.currentPosition++;
@@ -164,6 +164,8 @@ class ImageCarousel {
 		this.slideSwap(this.currentPosition)
 
 		this.leftIndex = -1 + this.currentPosition; // Makes it compatible with navigating right
+
+		console.log((this.sliderBullets.clientWidth - this.sliderNavigationLeft.clientWidth * 2))
 
 		// Determines elements that should be hidden first
 		if (this.sliderBulletsLength > (this.sliderBullets.clientWidth - this.sliderNavigationLeft.clientWidth * 2) || this.bullets.length > 5) {

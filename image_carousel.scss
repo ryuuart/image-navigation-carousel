@@ -149,7 +149,8 @@ $default-color: #E3E7ED;
 		position: relative;
 		list-style: none;
 		transition: transform 0.35s cubic-bezier(0.785, 0.135, 0.15, 0.86),
-		opacity 0.75s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+		opacity 0.75s cubic-bezier(0.785, 0.135, 0.15, 0.86),
+		all 0.75s cubic-bezier(0.785, 0.135, 0.15, 0.86);
 
 		width: 5rem;
 		max-width: 10rem;
