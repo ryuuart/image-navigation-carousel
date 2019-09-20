@@ -155,6 +155,9 @@ class ImageCarousel {
 			}
 			else if (window.innerWidth < 1440) {
 				// Here, we want to display only 3 bullets
+
+				// This sets the bounds for which buttons are visible
+				// This also handles the syncing
 				this.rightIndex = this.currentPosition + 2;
 
 				if (this.slides.length - this.currentPosition <= 2) {
@@ -181,7 +184,11 @@ class ImageCarousel {
 						this.bullets[i].classList.add("bullet-hide")
 					}
 				}
-			} else { // This is for larger viewports
+			} else { 
+				// This is for larger viewports
+
+				// This sets the bounds for which buttons are visible
+				// This also handles the syncing
 				this.rightIndex = this.currentPosition + 4;
 
 				if (this.slides.length - this.currentPosition <= 4) {
@@ -219,18 +226,21 @@ class ImageCarousel {
 		this.currentPosition = index;
 		this.slideLength = this.slides[0].scrollWidth;
 		
+		// Swap bullet and slide active states
 		this.selected[0].classList.remove('bullet-active')
 		this.selected[1].classList.remove('slide-active')
 		
 		this.bullets[index].classList.add('bullet-active');
 		this.slides[index].classList.add('slide-active');
 		
+		// The translation is based on index position and slide width
 		this.slidesPosition = -index * this.slideLength;
 		
 		Array.from(this.sliderGallery.children).forEach(e => {
 			e.style.transform = `translateX(${this.slidesPosition + this.slidesOffset}px)`;	
 		})
 		
+		// set new selected bullet for future swaps
 		this.selected = [this.bullets[index], this.slides[index]]
 	}
 
