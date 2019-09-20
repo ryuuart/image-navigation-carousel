@@ -102,8 +102,6 @@ class ImageCarousel {
 					
 					this.slideSwap(this.currentPosition);
 
-					this.setActive()
-					
 					this.currentPosition++;
 				}, this.options.autoplayDelay)
 			}
@@ -165,8 +163,6 @@ class ImageCarousel {
 
 		this.leftIndex = -1 + this.currentPosition; // Makes it compatible with navigating right
 
-		console.log((this.sliderBullets.clientWidth - this.sliderNavigationLeft.clientWidth * 2))
-
 		// Determines elements that should be hidden first
 		if (this.sliderBulletsLength > (this.sliderBullets.clientWidth - this.sliderNavigationLeft.clientWidth * 2) || this.bullets.length > 5) {
 			if (window.innerWidth < 996) {
@@ -174,13 +170,16 @@ class ImageCarousel {
 				this.rightIndex = this.currentPosition;
 
 				this.visibleLength = 1;
-				
+				this.navigationDisabled = true;
+
 				// Make the navigation visible when there's more than one element
 				if (this.bullets.length > 1) { 
 					this.sliderNavigation.forEach(e => e.style.visibility = `visible`);
 					this.sliderNavigation.forEach(e => e.style.opacity = ``);
 					this.isNavigationEnd();
-				}
+
+					this.navigationDisabled = false;
+				} 
 				
 				// Hide the bullets until there are 1 left
 				for(let i = 0; i < this.bullets.length; i++) {
