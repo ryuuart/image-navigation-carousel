@@ -1,5 +1,9 @@
 class ImageCarousel {
-	constructor() {
+	constructor(options = {
+		startPosition: 0,
+	}) {
+		this.options = options;
+
 		// Store elements from website
 		this.bullets = [...document.querySelectorAll(".bullet")];
 		this.sliderBullets = document.querySelector(".slider-bullets");
@@ -67,13 +71,28 @@ class ImageCarousel {
 		})
 
 		// Initialize 
-		window.addEventListener("load", this.ImageCarouselInitialize.bind(this))
+		window.addEventListener("load", () => {
+			this.ImageCarouselInitialize.bind(this)()
+
+			this.setActive()
+
+			this.setStartIndex(this.options.startPosition);
+		})
 		window.addEventListener("resize", () => {
 			let resizeTimer;
 			clearTimeout(resizeTimer);
 			resizeTimer = setTimeout(this.ImageCarouselInitialize.bind(this), 500);
 		})
 		window.addEventListener("orientationchange", this.ImageCarouselInitialize.bind(this))
+	}
+
+	setActive() {
+		// Make the current slide and bullet activated
+		this.bullets[this.currentPosition].classList.add('bullet-active')
+		this.slides[this.currentPosition].classList.add('slide-active')
+		
+		//  Select the default element used to swap 'active' classes
+		this.selected = [document.querySelector('.bullet-active'), document.querySelector('.slide-active')];
 	}
 
 	// Check if we're at the very first element or last element of navigation
@@ -108,14 +127,7 @@ class ImageCarousel {
 			this.sliderGalleryLength += e.scrollWidth; // get total length for sliding purposes
 		})
 
-		// Make the current slide and bullet activated
-		this.bullets[this.currentPosition].classList.add('bullet-active')
-		this.slides[this.currentPosition].classList.add('slide-active')
-		
-		//  Select the default element used to swap 'active' classes
-		this.selected = [document.querySelector('.bullet-active'), document.querySelector('.slide-active')];
-
-		this.slideSwap(this.currentPosition)
+		this.setActive()
 
 		this.leftIndex = -1 + this.currentPosition; // Makes it compatible with navigating right
 
@@ -143,12 +155,6 @@ class ImageCarousel {
 			}
 			else if (window.innerWidth < 1440) {
 				// Here, we want to display only 3 bullets
-				// if (this.currentPosition > 2) {
-				// 	this.rightIndex = 2 + (this.currentPosition - 2);
-				// } else {
-				// 	this.rightIndex = 2
-				// }
-
 				this.rightIndex = this.currentPosition + 2;
 
 				if (this.slides.length - this.currentPosition <= 2) {
@@ -176,13 +182,6 @@ class ImageCarousel {
 					}
 				}
 			} else { // This is for larger viewports
-				// This time we want to only show 5 elements, so we select the 5th element instead of the 3rd
-				// if (this.currentPosition > 4) {
-				// 	this.rightIndex = 4 + (this.currentPosition - 4);
-				// } else {
-				// 	this.rightIndex = 4;
-				// }
-
 				this.rightIndex = this.currentPosition + 4;
 
 				if (this.slides.length - this.currentPosition <= 4) {
@@ -238,8 +237,6 @@ class ImageCarousel {
 	// Change start index for ordering purposes
 	setStartIndex(deltaIndex) {
 		if (deltaIndex > 0 && deltaIndex < this.slides.length) {
-			this.bullets[this.rightIndex].classList.add('bullet-hide')
-	
 			this.leftIndex += deltaIndex;
 			this.rightIndex += deltaIndex;
 			
@@ -252,6 +249,8 @@ class ImageCarousel {
 		}
 	}
 
+	// Offset adds clones of slides to remove any blank spaces or if you want to start at a different slide
+	// Example: you want to start in the middle slide, not the start slide, so you set the offset to 1
 	setOffset(offset) {
 		this.leftClones.forEach(e => e.remove())
 		this.rightClones.forEach(e => e.remove())
