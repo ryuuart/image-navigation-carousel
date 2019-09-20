@@ -117,13 +117,13 @@ class ImageCarousel {
 
 		this.slideSwap(this.currentPosition)
 
-		this.leftIndex = -1; // Makes it compatible with navigating right
+		this.leftIndex = -1 + this.currentPosition; // Makes it compatible with navigating right
 
 		// Determines elements that should be hidden first
 		if (this.sliderBulletsLength > (this.sliderBullets.clientWidth - this.sliderNavigationLeft.clientWidth * 2) || this.bullets.length > 5) {
 			if (window.innerWidth < 996) {
 				// Here, we only want to display 1 bullet
-				this.rightIndex = 0;
+				this.rightIndex = this.currentPosition;
 				
 				// Make the navigation visible when there's more than one element
 				if (this.bullets.length > 1) { 
@@ -134,7 +134,7 @@ class ImageCarousel {
 				
 				// Hide the bullets until there are 1 left
 				for(let i = 0; i < this.bullets.length; i++) {
-					if (i >= 1) {
+					if (i != this.currentPosition) {
 						this.bullets[i].classList.add("bullet-hide")
 					}
 					else
@@ -143,7 +143,18 @@ class ImageCarousel {
 			}
 			else if (window.innerWidth < 1440) {
 				// Here, we want to display only 3 bullets
-				this.rightIndex = 2;
+				// if (this.currentPosition > 2) {
+				// 	this.rightIndex = 2 + (this.currentPosition - 2);
+				// } else {
+				// 	this.rightIndex = 2
+				// }
+
+				this.rightIndex = this.currentPosition + 2;
+
+				if (this.slides.length - this.currentPosition <= 2) {
+					this.rightIndex = this.slides.length - 1;
+					this.leftIndex = this.slides.length - 4;
+				}
 				
 				// Hide the navigation
 				// Since 3 elements will be shown, if there's already 3, there's no point to show the arrows
@@ -158,23 +169,36 @@ class ImageCarousel {
 				
 				// Hide the bullets until there are 3 left
 				for(let i = 0; i < this.bullets.length; i++) {
-					if (i >= 3) {
+					if (i > this.leftIndex && i <= this.rightIndex)
+						this.bullets[i].classList.remove("bullet-hide")
+					else {
 						this.bullets[i].classList.add("bullet-hide")
 					}
-					else
-					this.bullets[i].classList.remove("bullet-hide")
 				}
 			} else { // This is for larger viewports
 				// This time we want to only show 5 elements, so we select the 5th element instead of the 3rd
-				this.rightIndex = 4;
+				// if (this.currentPosition > 4) {
+				// 	this.rightIndex = 4 + (this.currentPosition - 4);
+				// } else {
+				// 	this.rightIndex = 4;
+				// }
+
+				this.rightIndex = this.currentPosition + 4;
+
+				if (this.slides.length - this.currentPosition <= 4) {
+					this.rightIndex = this.slides.length - 1;
+					this.leftIndex = this.slides.length - 6;
+				}
+
+				this.isNavigationEnd();
 				
 				// Hide the bullets until there are 5 left
 				for(let i = 0; i < this.bullets.length; i++) {
-					if (i >= 5) {
+					if (i > this.leftIndex && i <= this.rightIndex)
+						this.bullets[i].classList.remove("bullet-hide")
+					else {
 						this.bullets[i].classList.add("bullet-hide")
 					}
-					else
-						this.bullets[i].classList.remove("bullet-hide")
 				}
 			}
 		} else {
