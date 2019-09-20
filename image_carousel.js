@@ -2,7 +2,12 @@ class ImageCarousel {
 	constructor(options = {
 		startPosition: 0,
 	}) {
-		this.options = options;
+		const defaultOptions = {
+			startPosition: 0,
+			autoplay: false,
+			autoplayDelay: 3000,
+		}
+		this.options = Object.assign(defaultOptions, options);
 
 		// Store elements from website
 		this.bullets = [...document.querySelectorAll(".bullet")];
@@ -20,6 +25,7 @@ class ImageCarousel {
 		this.slidesOffset = 0;
 		this.slidesPosition = 0;
 		this.currentPosition = 0;
+		this.visibleLength = 0; // visible length is amount of bullets that should be visible
 
 		this.leftClones = [];
 		this.rightClones = [];
@@ -74,7 +80,21 @@ class ImageCarousel {
 		window.addEventListener("load", () => {
 			this.ImageCarouselInitialize.bind(this)()
 
-			this.setActive()
+			this.setActive.bind(this)()
+
+			setInterval(() => {
+				if (this.currentPosition >= this.slides.length)  {
+					this.currentPosition = 0;
+					for (let i = 0; i < this.slides.length; i++) {
+						this.sliderNavigationLeft.dispatchEvent(new MouseEvent('click'))
+					}
+				}
+				if (this.currentPosition >= this.visibleLength) this.sliderNavigationRight.dispatchEvent(new MouseEvent('click'))
+				this.setActive.bind(this)()
+
+				this.slideSwap.bind(this)(this.currentPosition);
+				this.currentPosition++;
+			}, this.options.autoplayDelay)
 
 			this.setStartIndex(this.options.startPosition);
 		})
@@ -136,6 +156,8 @@ class ImageCarousel {
 			if (window.innerWidth < 996) {
 				// Here, we only want to display 1 bullet
 				this.rightIndex = this.currentPosition;
+
+				this.visibleLength = 1;
 				
 				// Make the navigation visible when there's more than one element
 				if (this.bullets.length > 1) { 
@@ -155,6 +177,8 @@ class ImageCarousel {
 			}
 			else if (window.innerWidth < 1440) {
 				// Here, we want to display only 3 bullets
+
+				this.visibleLength = 3;
 
 				// This sets the bounds for which buttons are visible
 				// This also handles the syncing
@@ -186,6 +210,8 @@ class ImageCarousel {
 				}
 			} else { 
 				// This is for larger viewports
+
+				this.visibleLength = 5;
 
 				// This sets the bounds for which buttons are visible
 				// This also handles the syncing
