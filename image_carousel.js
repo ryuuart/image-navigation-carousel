@@ -78,23 +78,30 @@ class ImageCarousel {
 
 		// Initialize 
 		window.addEventListener("load", () => {
-			this.ImageCarouselInitialize.bind(this)()
+			this.ImageCarouselInitialize()
 
-			this.setActive.bind(this)()
+			this.setActive()
 
-			setInterval(() => {
-				if (this.currentPosition >= this.slides.length)  {
-					this.currentPosition = 0;
-					for (let i = 0; i < this.slides.length; i++) {
-						this.sliderNavigationLeft.dispatchEvent(new MouseEvent('click'))
+			if (this.options.autoplay) {
+				setInterval(() => {
+					if (this.currentPosition >= this.slides.length)  {
+						this.currentPosition = 0;
+						if (this.isNavigationEnd()) {
+							for (let i = 0; i < this.slides.length; i++) {
+								this.sliderNavigationLeft.dispatchEvent(new MouseEvent('click'))
+							}
+						}
 					}
-				}
-				if (this.currentPosition >= this.visibleLength) this.sliderNavigationRight.dispatchEvent(new MouseEvent('click'))
-				this.setActive.bind(this)()
+					if (this.currentPosition >= this.visibleLength) {
+						this.sliderNavigationRight.dispatchEvent(new MouseEvent('click'))
+					} 
 
-				this.slideSwap.bind(this)(this.currentPosition);
-				this.currentPosition++;
-			}, this.options.autoplayDelay)
+					this.setActive()
+	
+					this.slideSwap(this.currentPosition);
+					this.currentPosition++;
+				}, this.options.autoplayDelay)
+			}
 
 			this.setStartIndex(this.options.startPosition);
 		})
@@ -148,6 +155,8 @@ class ImageCarousel {
 		})
 
 		this.setActive()
+
+		this.slideSwap(this.currentPosition)
 
 		this.leftIndex = -1 + this.currentPosition; // Makes it compatible with navigating right
 
