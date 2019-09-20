@@ -27,6 +27,8 @@ class ImageCarousel {
 		this.currentPosition = 0;
 		this.visibleLength = 0; // visible length is amount of bullets that should be visible
 
+		this.navigationDisabled = false;
+		
 		this.leftClones = [];
 		this.rightClones = [];
 
@@ -86,19 +88,22 @@ class ImageCarousel {
 				setInterval(() => {
 					if (this.currentPosition >= this.slides.length)  {
 						this.currentPosition = 0;
-						if (this.isNavigationEnd()) {
+						if (!this.navigationDisabled) {
 							for (let i = 0; i < this.slides.length; i++) {
 								this.sliderNavigationLeft.dispatchEvent(new MouseEvent('click'))
 							}
 						}
 					}
 					if (this.currentPosition >= this.visibleLength) {
-						this.sliderNavigationRight.dispatchEvent(new MouseEvent('click'))
+						if (!this.navigationDisabled) {
+							this.sliderNavigationRight.dispatchEvent(new MouseEvent('click'))
+						}
 					} 
-
-					this.setActive()
-	
+					
 					this.slideSwap(this.currentPosition);
+					
+					this.setActive()
+					
 					this.currentPosition++;
 				}, this.options.autoplayDelay)
 			}
@@ -203,10 +208,14 @@ class ImageCarousel {
 				if (this.bullets.length === 3) {
 					this.sliderNavigation.forEach(e => e.style.opacity = `0`)
 					this.sliderNavigation.forEach(e => e.style.visibility = `hidden`)
+					
+					this.navigationDisabled = true;
 				} else {
 					this.sliderNavigation.forEach(e => e.style.opacity = ``)
 					this.sliderNavigation.forEach(e => e.style.visibility = `visible`)
 					this.isNavigationEnd();
+					
+					this.navigationDisabled = false;
 				}
 				
 				// Hide the bullets until there are 3 left
@@ -221,6 +230,19 @@ class ImageCarousel {
 				// This is for larger viewports
 
 				this.visibleLength = 5;
+
+				if (this.bullets.length === 5) {
+					this.sliderNavigation.forEach(e => e.style.opacity = `0`)
+					this.sliderNavigation.forEach(e => e.style.visibility = `hidden`)
+					
+					this.navigationDisabled = true;
+				} else {
+					this.sliderNavigation.forEach(e => e.style.opacity = ``)
+					this.sliderNavigation.forEach(e => e.style.visibility = `visible`)
+					this.isNavigationEnd();
+
+					this.navigationDisabled = false;
+				}
 
 				// This sets the bounds for which buttons are visible
 				// This also handles the syncing
@@ -248,6 +270,8 @@ class ImageCarousel {
 			// Since there's no responsive issues, there's no need for navigation
 			this.sliderNavigation.forEach(e => e.style.opacity = `0`);
 			this.sliderNavigation.forEach(e => e.style.visibility = `hidden`);
+
+			this.navigationDisabled = true;
 			
 			// Since there's no responsive issues, nothing should be hidden
 			for(let i = 0; i < this.bullets.length; i++) {
